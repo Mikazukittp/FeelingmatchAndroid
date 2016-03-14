@@ -2,12 +2,14 @@ package mikazuki.android.app.feelingmatch;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,6 +57,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mDrawerLayout.setDrawerListener(toggle);
         toggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
+        mNavigationView.getMenu().findItem(R.id.menu_version).setTitle("バージョン " + BuildConfig.VERSION_NAME);
 
         mBoys.add(new User("たろう", 1));
         mBoys.add(new User("じろう", 1));
@@ -68,76 +71,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mBoysList.setAdapter(mBoysAdapter);
         mGirlsList.setAdapter(mGirlsAdapter);
         mBoysList.setOnItemLongClickListener((parent, view, position, id) -> {
-            final View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_member, null);
-            ((EditText) dialogView.findViewById(R.id.name)).setText(mBoys.get(position).getName());
-//            ((RadioGroup) dialogView.findViewById(R.id.sex)).check(R.id.boy);
-            new AlertDialog.Builder(this)
-                    .setTitle("メンバー編集")
-                    .setView(dialogView)
-                    .setPositiveButton("完了", (dialog, which) -> {
-                        final String name = ((EditText) dialogView.findViewById(R.id.name)).getText().toString();
-                        if (name.length() == 0) {
-                            return;
-                        }
-                        mBoys.remove(position);
-                        final int sex = ((RadioGroup) dialogView.findViewById(R.id.sex)).getCheckedRadioButtonId();
-                        if (sex == R.id.boy) {
-                            mBoys.add(position, new User(name, 1));
-                            mBoysAdapter.notifyDataSetChanged();
-                        } else {
-                            mGirls.add(new User(name, 0));
-                            mGirlsAdapter.notifyDataSetChanged();
-                        }
-                    }).create().show();
+            showMemberEditDialog(mBoys.get(position), position);
             return true;
         });
         mGirlsList.setOnItemLongClickListener((parent, view, position, id) -> {
-            final View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_member, null);
-            ((EditText) dialogView.findViewById(R.id.name)).setText(mGirls.get(position).getName());
-            ((RadioGroup) dialogView.findViewById(R.id.sex)).check(R.id.girl);
-            new AlertDialog.Builder(this)
-                    .setTitle("メンバー編集")
-                    .setView(dialogView)
-                    .setPositiveButton("完了", (dialog, which) -> {
-                        final String name = ((EditText) dialogView.findViewById(R.id.name)).getText().toString();
-                        if (name.length() == 0) {
-                            return;
-                        }
-                        mGirls.remove(position);
-                        final int sex = ((RadioGroup) dialogView.findViewById(R.id.sex)).getCheckedRadioButtonId();
-                        if (sex == R.id.boy) {
-                            mBoys.add(new User(name, 1));
-                            mBoysAdapter.notifyDataSetChanged();
-                        } else {
-                            mGirls.add(position, new User(name, 0));
-                            mGirlsAdapter.notifyDataSetChanged();
-                        }
-                    }).create().show();
+            showMemberEditDialog(mGirls.get(position), position);
             return true;
         });
-        mBoysList.setItemsCanFocus(true);
     }
 
     @OnClick(R.id.fab)
     public void onClickFab(View view) {
-        final View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_member, null);
-        new AlertDialog.Builder(this)
-                .setTitle("メンバー追加")
-                .setView(dialogView)
-                .setPositiveButton("追加", (dialog, id) -> {
-                    final String name = ((EditText) dialogView.findViewById(R.id.name)).getText().toString();
-                    if (name.length() == 0) {
-                        return;
-                    }
-                    final int sex = ((RadioGroup) dialogView.findViewById(R.id.sex)).getCheckedRadioButtonId();
-                    if (sex == R.id.boy) {
-                        mBoys.add(new User(name, 1));
-                        mBoysAdapter.notifyDataSetChanged();
-                    } else {
-                        mGirls.add(new User(name, 0));
-                        mGirlsAdapter.notifyDataSetChanged();
-                    }
-                }).create().show();
+        showMemberEditDialog(null, 0);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -159,6 +104,46 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void showMemberEditDialog(@Nullable User user,
+                                     int position) {
+        final View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_member, null);
+        final EditText nameEditText = ButterKnife.findById(dialogView, R.id.name);
+        final RadioGroup sexRadioGroup = ButterKnife.findById(dialogView, R.id.sex);
+        final boolean isEdit = user != null;
+        if (isEdit) {
+            nameEditText.setText(user.getName());
+            sexRadioGroup.check(user.isBoy() ? R.id.boy : R.id.girl);
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(user != null ? "メンバー編集" : "メンバー追加")
+                .setView(dialogView)
+                .setPositiveButton(user != null ? "完了" : "追加", (dialog, which) -> {
+                    final String name = nameEditText.getText().toString();
+                    if (TextUtils.isEmpty(name)) return;
+                    if (isEdit && user.isBoy()) {
+                        mBoys.remove(position);
+                    } else if (isEdit && user.isGirl()) {
+                        mGirls.remove(position);
+                    }
+                    User newUser = new User(name, sexRadioGroup.getCheckedRadioButtonId() == R.id.boy ? 1 : 0);
+                    if (newUser.isBoy()) {
+                        if (isEdit && user.isBoy()) {
+                            mBoys.add(position, newUser);
+                        } else {
+                            mBoys.add(newUser);
+                        }
+                        mBoysAdapter.notifyDataSetChanged();
+                    } else {
+                        if (isEdit && user.isGirl()) {
+                            mGirls.add(position, newUser);
+                        } else {
+                            mGirls.add(newUser);
+                        }
+                        mGirlsAdapter.notifyDataSetChanged();
+                    }
+                }).create().show();
     }
 
     static class MemberListAdapter extends BaseAdapter {
@@ -192,24 +177,40 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         public View getView(int position,
                             View convertView,
                             ViewGroup parent) {
+            ViewHolder holder;
             if (convertView == null) {
                 convertView = layoutInflater.inflate(R.layout.list_member, parent, false);
+                holder = new ViewHolder(convertView);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
             }
             User user = memberList.get(position);
-            ((TextView) convertView.findViewById(R.id.name)).setText(user.getName());
-            final int color = user.getSex() == 1 ? R.color.colorPrimaryDark : R.color.colorAccentDark;
-            ((TextView) convertView.findViewById(R.id.name)).setTextColor(context.getResources().getColor(color));
-            ((ImageButton) convertView.findViewById(R.id.remove)).setOnClickListener(v -> {
-                new AlertDialog.Builder(context)
-                        .setTitle("メンバー削除")
-                        .setMessage(user.getName() + "さんを削除して本当によろしいですか？")
-                        .setPositiveButton("はい", ((dialog, which) -> {
-                            memberList.remove(position);
-                            notifyDataSetChanged();
-                        })).setNegativeButton("いいえ", null)
-                        .create().show();
-            });
+            holder.name.setText(user.getName());
+            final int color = user.isBoy() ? R.color.colorPrimaryDark : R.color.colorAccentDark;
+            holder.name.setTextColor(context.getResources().getColor(color));
+            holder.remove.setOnClickListener(v ->
+                    new AlertDialog.Builder(context)
+                            .setTitle("メンバー削除")
+                            .setMessage(user.getName() + "さんを削除して本当によろしいですか？")
+                            .setPositiveButton("はい", ((dialog, which) -> {
+                                memberList.remove(position);
+                                notifyDataSetChanged();
+                            })).setNegativeButton("いいえ", null)
+                            .create()
+                            .show());
             return convertView;
+        }
+
+        public static class ViewHolder {
+            @Bind(R.id.name)
+            TextView name;
+            @Bind(R.id.remove)
+            ImageButton remove;
+
+            public ViewHolder(View view) {
+                ButterKnife.bind(view);
+            }
         }
     }
 }

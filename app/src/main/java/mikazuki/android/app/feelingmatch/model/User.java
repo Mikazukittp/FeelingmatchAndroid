@@ -1,5 +1,7 @@
 package mikazuki.android.app.feelingmatch.model;
 
+import junit.framework.Assert;
+
 /**
  * @author haijimakazuki
  */
@@ -10,6 +12,7 @@ public class User {
 
     public User(String name, int sex) {
         this.name = name;
+        Assert.assertTrue(sex == 1 || sex == 0);
         this.sex = sex;
     }
 
@@ -26,6 +29,15 @@ public class User {
     }
 
     public void setSex(int sex) {
+        Assert.assertTrue(sex == 1 || sex == 0);
         this.sex = sex;
+    }
+
+    public boolean isBoy() {
+        return this.sex == 1;
+    }
+
+    public boolean isGirl() {
+        return this.sex == 0;
     }
 }
