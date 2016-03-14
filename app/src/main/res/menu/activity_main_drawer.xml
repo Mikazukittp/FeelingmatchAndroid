@@ -4,28 +4,26 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/menu_result"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="過去の結果" />
+            android:icon="@drawable/ic_history_black_24dp"
+            android:title="過去の結果"/>
     </group>
 
-    <item android:title="設定">
+    <item
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="設定">
         <menu>
             <item
                 android:id="@+id/menu_about"
-                android:icon="@drawable/ic_menu_share"
-                android:title="このアプリについて" />
+                android:title="このアプリについて"/>
             <item
                 android:id="@+id/menu_privacy"
-                android:icon="@drawable/ic_menu_send"
-                android:title="プライバシーポリシー" />
+                android:title="プライバシーポリシー"/>
             <item
                 android:id="@+id/menu_license"
-                android:icon="@drawable/ic_menu_send"
-                android:title="オープンソースライセンス" />
+                android:title="オープンソースライセンス"/>
             <item
                 android:id="@+id/menu_version"
-                android:icon="@drawable/ic_menu_send"
-                android:title="バージョン" />
+                android:title="バージョン"/>
         </menu>
     </item>
 
