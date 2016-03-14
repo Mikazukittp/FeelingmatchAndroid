@@ -3,33 +3,29 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/menu_result"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="過去の結果" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="設定">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/menu_about"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:title="このアプリについて" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/menu_privacy"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:title="プライバシーポリシー" />
+            <item
+                android:id="@+id/menu_license"
+                android:icon="@drawable/ic_menu_send"
+                android:title="オープンソースライセンス" />
+            <item
+                android:id="@+id/menu_version"
+                android:icon="@drawable/ic_menu_send"
+                android:title="バージョン" />
         </menu>
     </item>
 
