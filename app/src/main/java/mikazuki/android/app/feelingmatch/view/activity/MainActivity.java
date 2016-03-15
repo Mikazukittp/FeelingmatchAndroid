@@ -1,7 +1,9 @@
-package mikazuki.android.app.feelingmatch;
+package mikazuki.android.app.feelingmatch.view.activity;
 
-import android.content.Context;
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -10,16 +12,15 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RadioGroup;
-import android.widget.TextView;
+
+import com.annimon.stream.Stream;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,10 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import mikazuki.android.app.feelingmatch.BuildConfig;
+import mikazuki.android.app.feelingmatch.R;
 import mikazuki.android.app.feelingmatch.model.User;
+import mikazuki.android.app.feelingmatch.view.adapter.MemberListAdapter;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -43,8 +47,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     ListView mGirlsList;
     private MemberListAdapter mBoysAdapter;
     private MemberListAdapter mGirlsAdapter;
-    private ArrayList<User> mBoys = new ArrayList<>();
-    private ArrayList<User> mGirls = new ArrayList<>();
+    private List<User> mBoys = new ArrayList<>();
+    private List<User> mGirls = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +56,21 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        setSupportActionBar(mToolbar);
+        mToolbar.setTitle(getString(R.string.app_name));
+//        setSupportActionBar(mToolbar);
+        mToolbar.inflateMenu(R.menu.main_toolbar);
+        mToolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.menu_start) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArray("boys", Stream.of(mBoys).map(Parcels::wrap).toArray(Parcelable[]::new));
+                bundle.putParcelableArray("girls", Stream.of(mGirls).map(Parcels::wrap).toArray(Parcelable[]::new));
+                startActivity(new Intent(this, SelectUserActivity.class), bundle);
+                finish();
+                return true;
+            }
+            return true;
+        });
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawerLayout.setDrawerListener(toggle);
         toggle.syncState();
@@ -80,11 +98,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         });
     }
 
-    @OnClick(R.id.fab)
-    public void onClickFab(View view) {
-        showMemberEditDialog(null, 0);
-    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -104,6 +117,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @OnClick(R.id.fab)
+    public void onClickFab(View view) {
+        showMemberEditDialog(null, 0);
     }
 
     public void showMemberEditDialog(@Nullable User user,
@@ -146,71 +164,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 }).create().show();
     }
 
-    static class MemberListAdapter extends BaseAdapter {
+    public void changeDialogColor(Dialog dialog) {
 
-        Context context;
-        LayoutInflater layoutInflater = null;
-        List<User> memberList;
-
-        public MemberListAdapter(Context context, List<User> memberList) {
-            this.context = context;
-            layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            this.memberList = memberList;
-        }
-
-        @Override
-        public int getCount() {
-            return memberList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return memberList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position,
-                            View convertView,
-                            ViewGroup parent) {
-            ViewHolder holder;
-            if (convertView == null) {
-                convertView = layoutInflater.inflate(R.layout.list_member, parent, false);
-                holder = new ViewHolder(convertView);
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
-            }
-            User user = memberList.get(position);
-            holder.name.setText(user.getName());
-            final int color = user.isBoy() ? R.color.colorPrimaryDark : R.color.colorAccentDark;
-            holder.name.setTextColor(context.getResources().getColor(color));
-            holder.remove.setOnClickListener(v ->
-                    new AlertDialog.Builder(context)
-                            .setTitle("メンバー削除")
-                            .setMessage(user.getName() + "さんを削除して本当によろしいですか？")
-                            .setPositiveButton("はい", ((dialog, which) -> {
-                                memberList.remove(position);
-                                notifyDataSetChanged();
-                            })).setNegativeButton("いいえ", null)
-                            .create()
-                            .show());
-            return convertView;
-        }
-
-        public static class ViewHolder {
-            @Bind(R.id.name)
-            TextView name;
-            @Bind(R.id.remove)
-            ImageButton remove;
-
-            public ViewHolder(View view) {
-                ButterKnife.bind(view);
-            }
-        }
     }
 }

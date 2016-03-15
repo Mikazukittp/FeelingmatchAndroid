@@ -23,14 +23,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <RadioButton
+        <android.support.v7.widget.AppCompatRadioButton
             android:id="@+id/boy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
             android:text="男性" />
 
-        <RadioButton
+        <android.support.v7.widget.AppCompatRadioButton
             android:id="@+id/girl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
