@@ -2,25 +2,35 @@ package mikazuki.android.app.feelingmatch.model;
 
 import junit.framework.Assert;
 
-import org.parceler.Parcel;
-import org.parceler.Transient;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * @author haijimakazuki
  */
-@Parcel
-public class User {
+public class User extends RealmObject {
 
+    @PrimaryKey
+    private long id;
     private String name;
     private int sex; // girl=0, boy=1
 
     public User() {
     }
 
-    public User(String name, int sex) {
+    public User(long id, String name, int sex) {
+        this.id = id;
         this.name = name;
         Assert.assertTrue(sex == 1 || sex == 0);
         this.sex = sex;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -40,12 +50,10 @@ public class User {
         this.sex = sex;
     }
 
-    @Transient
     public boolean isBoy() {
         return this.sex == 1;
     }
 
-    @Transient
     public boolean isGirl() {
         return this.sex == 0;
     }

@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 23
@@ -13,16 +14,30 @@ android {
         versionCode 1
         versionName '1.0'
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    packagingOptions {
+        exclude 'META-INF/maven/com.google.guava/guava/pom.properties'
+        exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
+        exclude 'META-INF/BCKEY.DSA'
+        exclude 'META-INF/BCKEY.SF'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude 'org/objectweb/asm/AnnotationVisitor.class'
+        exclude 'AUTHORS'
+    }
+    dexOptions {
+        javaMaxHeapSize "4g"
+        incremental true
     }
 }
 
@@ -37,11 +52,9 @@ dependencies {
     compile 'com.android.support:design:23.2.1'
     compile 'com.android.support:support-vector-drawable:23.2.1'
     compile 'com.android.support:animated-vector-drawable:23.2.1'
-
     compile 'com.jakewharton:butterknife:7.0.1'
-
     compile 'org.parceler:parceler-api:1.0.4'
     apt 'org.parceler:parceler:1.0.4'
-
     compile 'com.annimon:stream:1.0.8'
+    compile 'io.realm:realm-gradle-plugin:0.88.1'
 }

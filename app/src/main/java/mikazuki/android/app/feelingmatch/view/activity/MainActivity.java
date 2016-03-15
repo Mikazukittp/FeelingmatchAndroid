@@ -3,7 +3,6 @@ package mikazuki.android.app.feelingmatch.view.activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,16 +19,20 @@ import android.widget.RadioGroup;
 
 import com.annimon.stream.Stream;
 
-import org.parceler.Parcels;
-
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmList;
 import mikazuki.android.app.feelingmatch.BuildConfig;
 import mikazuki.android.app.feelingmatch.R;
+import mikazuki.android.app.feelingmatch.model.AutoIncrement;
+import mikazuki.android.app.feelingmatch.model.Match;
 import mikazuki.android.app.feelingmatch.model.User;
 import mikazuki.android.app.feelingmatch.view.adapter.MemberListAdapter;
 
@@ -49,6 +52,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private MemberListAdapter mGirlsAdapter;
     private List<User> mBoys = new ArrayList<>();
     private List<User> mGirls = new ArrayList<>();
+    private Realm mRealm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,16 +60,25 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
+        mRealm = Realm.getInstance(realmConfig);
+
         mToolbar.setTitle(getString(R.string.app_name));
 //        setSupportActionBar(mToolbar);
         mToolbar.inflateMenu(R.menu.main_toolbar);
         mToolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.menu_start) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelableArray("boys", Stream.of(mBoys).map(Parcels::wrap).toArray(Parcelable[]::new));
-                bundle.putParcelableArray("girls", Stream.of(mGirls).map(Parcels::wrap).toArray(Parcelable[]::new));
-                startActivity(new Intent(this, SelectUserActivity.class), bundle);
-                finish();
+                RealmList<User> members = new RealmList<>();
+                Stream.of(mBoys).forEach(members::add);
+                Stream.of(mGirls).forEach(members::add);
+                Match match = new Match(AutoIncrement.newId(mRealm, Match.class), new Date(), members);
+                mRealm.beginTransaction();
+                mRealm.copyToRealmOrUpdate(match);
+                mRealm.commitTransaction();
+
+                Intent intent = new Intent(this, SelectUserActivity.class);
+                intent.putExtra("id", match.getId());
+                startActivity(intent);
                 return true;
             }
             return true;
@@ -76,13 +89,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         toggle.syncState();
         mNavigationView.setNavigationItemSelectedListener(this);
         mNavigationView.getMenu().findItem(R.id.menu_version).setTitle("バージョン " + BuildConfig.VERSION_NAME);
-
-        mBoys.add(new User("たろう", 1));
-        mBoys.add(new User("じろう", 1));
-        mBoys.add(new User("さぶろう", 1));
-        mGirls.add(new User("はるこ", 0));
-        mGirls.add(new User("なつこ", 0));
-        mGirls.add(new User("あきこ", 0));
 
         mBoysAdapter = new MemberListAdapter(this, mBoys);
         mGirlsAdapter = new MemberListAdapter(this, mGirls);
@@ -96,6 +102,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             showMemberEditDialog(mGirls.get(position), position);
             return true;
         });
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        mRealm.close();
+        super.onDestroy();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -145,7 +158,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     } else if (isEdit && user.isGirl()) {
                         mGirls.remove(position);
                     }
-                    User newUser = new User(name, sexRadioGroup.getCheckedRadioButtonId() == R.id.boy ? 1 : 0);
+
+                    // Create new User and insert to realm
+                    User newUser = new User(
+                            isEdit ? user.getId() : AutoIncrement.newId(mRealm, User.class),
+                            name,
+                            sexRadioGroup.getCheckedRadioButtonId() == R.id.boy ? 1 : 0);
+                    mRealm.beginTransaction();
+                    mRealm.copyToRealmOrUpdate(newUser);
+                    mRealm.commitTransaction();
+
                     if (newUser.isBoy()) {
                         if (isEdit && user.isBoy()) {
                             mBoys.add(position, newUser);
