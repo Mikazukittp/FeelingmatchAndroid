@@ -15,6 +15,8 @@ public class User extends RealmObject {
     private String name;
     private int sex; // girl=0, boy=1
 
+    private long favoriteUserId;
+
     public User() {
     }
 
@@ -48,6 +50,14 @@ public class User extends RealmObject {
     public void setSex(int sex) {
         Assert.assertTrue(sex == 1 || sex == 0);
         this.sex = sex;
+    }
+
+    public long getFavoriteUserId() {
+        return favoriteUserId;
+    }
+
+    public void setFavoriteUserId(long favoriteUserId) {
+        this.favoriteUserId = favoriteUserId;
     }
 
     public boolean isBoy() {

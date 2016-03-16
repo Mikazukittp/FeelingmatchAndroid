@@ -17,4 +17,28 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+
+    <!-- Text Style -->
+    <style name="Boy" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/boyDark</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Girl" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/girlDark</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Boy.Large">
+        <item name="android:textSize">32sp</item>
+    </style>
+
+    <style name="Girl.Large">
+        <item name="android:textSize">32sp</item>
+    </style>
+
+    <style name="AppTheme.NavMenu" parent="AppTheme">
+        <item name="android:textColorPrimary">@color/colorPrimaryDark</item>
+    </style>
+
 </resources>

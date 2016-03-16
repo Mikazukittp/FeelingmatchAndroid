@@ -2,6 +2,8 @@ package mikazuki.android.app.feelingmatch.view.activity;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -68,6 +70,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mToolbar.inflateMenu(R.menu.main_toolbar);
         mToolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.menu_start) {
+                if (mBoys.size() < 2 || mGirls.size() < 2) {
+                    new AlertDialog.Builder(this)
+                            .setMessage("男性と女性のメンバーを最低2人ずつ追加してください。")
+                            .setPositiveButton("閉じる", null)
+                            .create().show();
+                    return false;
+                }
+
+
                 RealmList<User> members = new RealmList<>();
                 Stream.of(mBoys).forEach(members::add);
                 Stream.of(mGirls).forEach(members::add);
@@ -90,6 +101,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mNavigationView.setNavigationItemSelectedListener(this);
         mNavigationView.getMenu().findItem(R.id.menu_version).setTitle("バージョン " + BuildConfig.VERSION_NAME);
 
+        mNavigationView.setItemTextColor(new ColorStateList(
+                new int[][]{new int[]{android.R.attr.state_pressed}, new int[]{}},
+                new int[]{Color.parseColor("#0097A7"), getResources().getColor(android.R.color.secondary_text_light)}));
+        mNavigationView.setItemIconTintList(new ColorStateList(
+                new int[][]{new int[]{android.R.attr.state_pressed}, new int[]{}},
+                new int[]{Color.parseColor("#0097A7"), getResources().getColor(android.R.color.secondary_text_light)}));
         mBoysAdapter = new MemberListAdapter(this, mBoys);
         mGirlsAdapter = new MemberListAdapter(this, mGirls);
         mBoysList.setAdapter(mBoysAdapter);

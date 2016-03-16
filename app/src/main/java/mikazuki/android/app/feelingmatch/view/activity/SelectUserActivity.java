@@ -2,6 +2,11 @@ package mikazuki.android.app.feelingmatch.view.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.TextAppearanceSpan;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,7 +24,7 @@ import io.realm.RealmConfiguration;
 import mikazuki.android.app.feelingmatch.R;
 import mikazuki.android.app.feelingmatch.model.Match;
 import mikazuki.android.app.feelingmatch.model.User;
-import mikazuki.android.app.feelingmatch.view.adapter.MemberListAdapter;
+import mikazuki.android.app.feelingmatch.view.adapter.CandidateListAdapter;
 
 /**
  * @author haijimakazuki
@@ -30,12 +35,15 @@ public class SelectUserActivity extends BaseActivity {
     TextView mTitle;
     @Bind(R.id.candidates)
     ListView mCandidateList;
+    @Bind(R.id.next)
+    Button mNext;
 
     private Realm mRealm;
     private Match mMatch;
     private List<User> mMembers;
     private User mTarget;
     private int mIndex;
+    private CandidateListAdapter mAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,34 +70,70 @@ public class SelectUserActivity extends BaseActivity {
     }
 
     public void renderNext() {
+        mNext.setEnabled(false);
         mTarget = mMembers.get(mIndex);
-        mTitle.setText(mTarget.getName() + "さんの番です");
 
-        // TODO: 正しいAdapterをセット
-        mCandidateList.setAdapter(new MemberListAdapter(this, Stream.of(mMembers).filter(m -> m.getSex() == 1 - mTarget.getSex()).collect(Collectors.toList())));
+        TextAppearanceSpan coloredSpan = new TextAppearanceSpan(this, mTarget.isBoy() ? R.style.Boy_Large : R.style.Girl_Large);
+        SpannableStringBuilder ssb = new SpannableStringBuilder();
+        ssb.append(mTarget.getName());
+        ssb.setSpan(coloredSpan, 0, ssb.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb.append("さんの番です");
+        mTitle.setText(ssb);
+
+        mCandidateList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        final List<User> candidates = Stream.of(mMembers).filter(m -> m.getSex() == 1 - mTarget.getSex()).collect(Collectors.toList());
+        mAdapter = new CandidateListAdapter(this, candidates);
+        mCandidateList.setAdapter(mAdapter);
+        mCandidateList.setOnItemClickListener((parent, view, position, id) -> {
+            Stream.range(0, mAdapter.getCount()).map(mAdapter::getItem).forEach(row -> row.setChecked(false));
+            mAdapter.getItem(position).setChecked(true);
+            mAdapter.notifyDataSetChanged();
+            mNext.setEnabled(true);
+        });
     }
 
     public void renderResult() {
-        // TODO: 結果画面へ
-        // startActivity();
+        new AlertDialog.Builder(this)
+                .setTitle("投票終了")
+                .setMessage("全員の投票が終わりました。\n結果画面へ移動します。")
+                .setPositiveButton("結果閲覧", (dialog, which) -> {
+                    // startActivity();
+                }).setCancelable(false)
+                .create().show();
     }
 
     @OnClick(R.id.next)
     public void nextPerson() {
-        // TODO: 確認ダイアログ
-        // TODO: 好みを保存
-        // mTarget.favoriteUserId = selectedUser.getId();
-        mRealm.beginTransaction();
-        mRealm.copyToRealmOrUpdate(mTarget);
-        mRealm.commitTransaction();
-
-
-        if (mIndex < mMembers.size() - 1) {
-            mIndex++;
-            renderNext();
-        } else {
-            renderResult();
+        final User selectedUser = mAdapter.getSelectedUser();
+        if (selectedUser == null) {
+            return;
         }
+
+        TextAppearanceSpan coloredSpan = new TextAppearanceSpan(this, selectedUser.isBoy() ? R.style.Boy : R.style.Girl);
+        SpannableStringBuilder ssb = new SpannableStringBuilder();
+        ssb.append(selectedUser.getName());
+        ssb.setSpan(coloredSpan, 0, ssb.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb.append("さんでよろしいですか？");
+
+        new AlertDialog.Builder(this)
+                .setTitle("確認")
+                .setMessage(ssb)
+                .setPositiveButton("はい", (dialog, which) -> {
+                    mRealm.beginTransaction();
+                    mTarget.setFavoriteUserId(selectedUser.getId());
+                    mRealm.copyToRealmOrUpdate(mTarget);
+                    mRealm.commitTransaction();
+
+                    if (mIndex < mMembers.size() - 1) {
+                        mIndex++;
+                        renderNext();
+                    } else {
+                        renderResult();
+                    }
+                }).setNegativeButton("いいえ", null)
+                .create().show();
     }
 
     // TODO: 戻るボタン禁止
