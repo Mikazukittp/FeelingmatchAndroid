@@ -4,8 +4,8 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/menu_result"
-            android:icon="@drawable/ic_history_black_24dp"
-            android:title="過去の結果"/>
+            android:icon="@drawable/ic_favorite_border_grey_400_24dp"
+            android:title="過去の結果" />
     </group>
 
     <item
@@ -14,16 +14,16 @@
         <menu>
             <item
                 android:id="@+id/menu_about"
-                android:title="このアプリについて"/>
+                android:title="このアプリについて" />
             <item
                 android:id="@+id/menu_privacy"
-                android:title="プライバシーポリシー"/>
+                android:title="プライバシーポリシー" />
             <item
                 android:id="@+id/menu_license"
-                android:title="オープンソースライセンス"/>
+                android:title="オープンソースライセンス" />
             <item
                 android:id="@+id/menu_version"
-                android:title="バージョン"/>
+                android:title="バージョン" />
         </menu>
     </item>
 

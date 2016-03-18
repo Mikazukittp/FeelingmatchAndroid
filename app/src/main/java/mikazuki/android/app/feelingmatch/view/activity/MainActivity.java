@@ -40,6 +40,11 @@ import mikazuki.android.app.feelingmatch.view.adapter.MemberListAdapter;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+
+    private static final ColorStateList Pressed_Cyan = new ColorStateList(
+            new int[][]{new int[]{android.R.attr.state_pressed}, new int[]{}},
+            new int[]{Color.parseColor("#00BCD4"), Color.DKGRAY});
+
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
     @Bind(R.id.drawer_layout)
@@ -78,7 +83,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     return false;
                 }
 
-
                 RealmList<User> members = new RealmList<>();
                 Stream.of(mBoys).forEach(members::add);
                 Stream.of(mGirls).forEach(members::add);
@@ -101,12 +105,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mNavigationView.setNavigationItemSelectedListener(this);
         mNavigationView.getMenu().findItem(R.id.menu_version).setTitle("バージョン " + BuildConfig.VERSION_NAME);
 
-        mNavigationView.setItemTextColor(new ColorStateList(
-                new int[][]{new int[]{android.R.attr.state_pressed}, new int[]{}},
-                new int[]{Color.parseColor("#0097A7"), getResources().getColor(android.R.color.secondary_text_light)}));
-        mNavigationView.setItemIconTintList(new ColorStateList(
-                new int[][]{new int[]{android.R.attr.state_pressed}, new int[]{}},
-                new int[]{Color.parseColor("#0097A7"), getResources().getColor(android.R.color.secondary_text_light)}));
+        mNavigationView.setItemTextColor(Pressed_Cyan);
+        mNavigationView.setItemIconTintList(Pressed_Cyan);
         mBoysAdapter = new MemberListAdapter(this, mBoys);
         mGirlsAdapter = new MemberListAdapter(this, mGirls);
         mBoysList.setAdapter(mBoysAdapter);

@@ -1,5 +1,6 @@
 package mikazuki.android.app.feelingmatch.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -98,7 +99,10 @@ public class SelectUserActivity extends BaseActivity {
                 .setTitle("投票終了")
                 .setMessage("全員の投票が終わりました。\n結果画面へ移動します。")
                 .setPositiveButton("結果閲覧", (dialog, which) -> {
-                    // startActivity();
+
+                    Intent intent = new Intent(this, ResultActivity.class);
+                    intent.putExtra("id", mMatch.getId());
+                    startActivity(intent);
                 }).setCancelable(false)
                 .create().show();
     }
