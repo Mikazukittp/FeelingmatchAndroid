@@ -17,10 +17,14 @@ public class DotsView extends View {
     private static final int DOTS_COUNT = 7;
     private static final int OUTER_DOTS_POSITION_ANGLE = 360 / DOTS_COUNT;
 
-    private static final int COLOR_1 = 0xFFFFC107;
-    private static final int COLOR_2 = 0xFFFF9800;
-    private static final int COLOR_3 = 0xFFFF5722;
-    private static final int COLOR_4 = 0xFFF44336;
+    //    private static final int COLOR_1 = 0xFFFFC107;
+//    private static final int COLOR_2 = 0xFFFF9800;
+//    private static final int COLOR_3 = 0xFFFF5722;
+//    private static final int COLOR_4 = 0xFFF44336;
+    private static final int COLOR_1 = 0xFF80DEEA;
+    private static final int COLOR_2 = 0xFF00BCD4;
+    private static final int COLOR_3 = 0xFFF48FB1;
+    private static final int COLOR_4 = 0xFFF06292;
     public static final Property<DotsView, Float> DOTS_PROGRESS = new Property<DotsView, Float>(Float.class, "dotsProgress") {
         @Override
         public Float get(DotsView object) {

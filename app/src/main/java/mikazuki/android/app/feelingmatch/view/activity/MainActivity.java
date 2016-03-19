@@ -141,6 +141,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.menu_privacy:
                 break;
             case R.id.menu_version:
+                startActivity(new Intent(this, ResultActivity.class));
                 break;
             default:
                 return false;

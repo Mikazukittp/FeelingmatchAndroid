@@ -10,6 +10,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Property;
 import android.view.View;
 
@@ -29,8 +30,10 @@ public class CircleView extends View {
                     object.setInnerCircleRadiusProgress(value);
                 }
             };
-    private static final int START_COLOR = 0xFFFF5722;
-    private static final int END_COLOR = 0xFFFFC107;
+    //    private static final int START_COLOR = 0xFFFF5722;
+//    private static final int END_COLOR = 0xFFFFC107;
+    private static final int START_COLOR = 0xFF00BCD4;
+    private static final int END_COLOR = 0xFFF06292;
     public static final Property<CircleView, Float> OUTER_CIRCLE_RADIUS_PROGRESS =
             new Property<CircleView, Float>(Float.class, "outerCircleRadiusProgress") {
                 @Override
@@ -82,8 +85,9 @@ public class CircleView extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         maxCircleSize = w / 2;
-        tempBitmap = Bitmap.createBitmap(getWidth(), getWidth(), Bitmap.Config.ARGB_8888);
+        tempBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
         tempCanvas = new Canvas(tempBitmap);
+        Log.d("!!!", "(" + w + "," + h + ")");
     }
 
     @Override
