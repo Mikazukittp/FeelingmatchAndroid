@@ -4,7 +4,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/menu_result"
-            android:icon="@drawable/ic_favorite_border_grey_400_24dp"
+            android:icon="@drawable/ic_favorite_border_grey_400_36dp"
             android:title="過去の結果" />
     </group>
 

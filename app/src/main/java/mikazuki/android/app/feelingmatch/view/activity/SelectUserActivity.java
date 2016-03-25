@@ -103,6 +103,7 @@ public class SelectUserActivity extends BaseActivity {
                     Intent intent = new Intent(this, ResultActivity.class);
                     intent.putExtra("id", mMatch.getId());
                     startActivity(intent);
+                    finish();
                 }).setCancelable(false)
                 .create().show();
     }
@@ -140,6 +141,8 @@ public class SelectUserActivity extends BaseActivity {
                 .create().show();
     }
 
-    // TODO: 戻るボタン禁止
-
+    @Override
+    public void onBackPressed() {
+        // do nothing
+    }
 }

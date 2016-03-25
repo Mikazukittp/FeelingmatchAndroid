@@ -1,8 +1,10 @@
 package mikazuki.android.app.feelingmatch.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.TextView;
 
 import com.annimon.stream.Stream;
@@ -14,6 +16,7 @@ import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import mikazuki.android.app.feelingmatch.R;
@@ -66,5 +69,10 @@ public class ResultActivity extends BaseActivity {
         super.onResume();
         mHeart.animate(false);
         new Handler().postDelayed(() -> mHeart.animate(true), 200);
+    }
+
+    @OnClick(R.id.go_top)
+    public void goTopScreen(View v) {
+        startActivity(new Intent(this, MainActivity.class));
     }
 }

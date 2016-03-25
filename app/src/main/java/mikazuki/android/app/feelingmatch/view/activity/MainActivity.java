@@ -1,29 +1,34 @@
 package mikazuki.android.app.feelingmatch.view.activity;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
+import com.annimon.stream.Collectors;
 import com.annimon.stream.Stream;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -84,10 +89,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 }
 
                 RealmList<User> members = new RealmList<>();
-                Stream.of(mBoys).forEach(members::add);
-                Stream.of(mGirls).forEach(members::add);
-                Match match = new Match(AutoIncrement.newId(mRealm, Match.class), new Date(), members);
+
+                long nextId = AutoIncrement.newId(mRealm, User.class);
                 mRealm.beginTransaction();
+                for (User user : Stream.concat(Stream.of(mBoys), Stream.of(mGirls)).collect(Collectors.toList())) {
+                    if (user.getId() == -1) user.setId(nextId++);
+                    members.add(user);
+                    mRealm.copyToRealmOrUpdate(user);
+                }
+                Match match = new Match(AutoIncrement.newId(mRealm, Match.class), null, new Date(), members);
                 mRealm.copyToRealmOrUpdate(match);
                 mRealm.commitTransaction();
 
@@ -119,6 +129,17 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             showMemberEditDialog(mGirls.get(position), position);
             return true;
         });
+
+        // TODO: リリース時は外す
+        if (BuildConfig.DEBUG) {
+            Match match = mRealm.where(Match.class).equalTo("id", 1).findFirst();
+            if (match != null) {
+                Stream.of(match.getMembers()).forEach(member -> {
+                    if (member.isBoy()) mBoys.add(member);
+                    else mGirls.add(member);
+                });
+            }
+        }
     }
 
 
@@ -141,7 +162,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.menu_privacy:
                 break;
             case R.id.menu_version:
-                startActivity(new Intent(this, ResultActivity.class));
+                // TODO: リリース時は外す
+                if (BuildConfig.DEBUG) {
+                    startActivity(new Intent(this, ResultActivity.class));
+                }
                 break;
             default:
                 return false;
@@ -157,15 +181,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     public void showMemberEditDialog(@Nullable User user,
                                      int position) {
+        AlertDialog alertDialog;
         final View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_member, null);
-        final EditText nameEditText = ButterKnife.findById(dialogView, R.id.name);
+        final AppCompatEditText nameEditText = ButterKnife.findById(dialogView, R.id.name);
         final RadioGroup sexRadioGroup = ButterKnife.findById(dialogView, R.id.sex);
+        final AppCompatRadioButton boyRadioButton = ButterKnife.findById(dialogView, R.id.boy);
+        final AppCompatRadioButton girlRadioButton = ButterKnife.findById(dialogView, R.id.girl);
         final boolean isEdit = user != null;
         if (isEdit) {
             nameEditText.setText(user.getName());
             sexRadioGroup.check(user.isBoy() ? R.id.boy : R.id.girl);
         }
-        new AlertDialog.Builder(this)
+        alertDialog = new AlertDialog.Builder(this)
                 .setTitle(user != null ? "メンバー編集" : "メンバー追加")
                 .setView(dialogView)
                 .setPositiveButton(user != null ? "完了" : "追加", (dialog, which) -> {
@@ -179,12 +206,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
                     // Create new User and insert to realm
                     User newUser = new User(
-                            isEdit ? user.getId() : AutoIncrement.newId(mRealm, User.class),
+                            isEdit ? user.getId() : -1,
                             name,
                             sexRadioGroup.getCheckedRadioButtonId() == R.id.boy ? 1 : 0);
-                    mRealm.beginTransaction();
-                    mRealm.copyToRealmOrUpdate(newUser);
-                    mRealm.commitTransaction();
+
 
                     if (newUser.isBoy()) {
                         if (isEdit && user.isBoy()) {
@@ -201,10 +226,31 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         }
                         mGirlsAdapter.notifyDataSetChanged();
                     }
-                }).create().show();
+                }).create();
+        alertDialog.setOnShowListener(dialog -> {
+            if (isEdit && user.isGirl()) {
+                changeDialogColor(alertDialog, nameEditText, R.color.girlDark);
+            } else {
+                changeDialogColor(alertDialog, nameEditText, R.color.boyDark);
+            }
+            boyRadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) changeDialogColor(alertDialog, nameEditText, R.color.boyDark);
+            });
+            girlRadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) changeDialogColor(alertDialog, nameEditText, R.color.girlDark);
+            });
+        });
+        alertDialog.show();
     }
 
-    public void changeDialogColor(Dialog dialog) {
+    public void changeDialogColor(@Nonnull final AlertDialog dialog,
+                                  @Nonnull final AppCompatEditText editText,
+                                  @ColorRes final int colorRes) {
+        int color = getResources().getColor(colorRes);
 
+        TextView titleView = (TextView) dialog.getWindow().findViewById(R.id.alertTitle);
+        titleView.setTextColor(color);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(color);
+        editText.setTextColor(color);
     }
 }

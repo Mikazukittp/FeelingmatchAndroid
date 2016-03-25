@@ -65,7 +65,7 @@ public class CandidateListAdapter extends BaseAdapter {
 
         final AppData rowData = memberList.get(position);
 
-        holder.heart.setImageResource(rowData.isChecked() ? R.drawable.ic_favorite_red_800_24dp : R.drawable.ic_favorite_border_grey_400_24dp);
+        holder.heart.setImageResource(rowData.isChecked() ? R.drawable.ic_favorite_red_800_36dp : R.drawable.ic_favorite_border_grey_400_36dp);
         holder.name.setText(rowData.getUser().getName());
         final int color = rowData.getUser().isBoy() ? R.color.colorPrimaryDark : R.color.colorAccentDark;
         holder.name.setTextColor(context.getResources().getColor(color));

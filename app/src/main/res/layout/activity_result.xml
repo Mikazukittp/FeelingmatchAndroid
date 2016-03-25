@@ -18,4 +18,12 @@
         android:textColor="@color/love"
         android:textSize="48sp" />
 
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/go_top"
+        style="@style/Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:text="TOPに戻る" />
+
 </FrameLayout>

@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -19,9 +18,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="8dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            tools:text="xxさんの番です。" />
+            android:textSize="16sp"
+            tools:text="xxさんの番です" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="好きな相手を選んでください"
+            android:textSize="16sp" />
 
         <ListView
             android:id="@+id/candidates"
@@ -29,9 +40,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1" />
 
+        <!--style="@style/Widget.AppCompat.Button.Colored"-->
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/next"
-            style="@style/Widget.AppCompat.Button.Colored"
+            style="@style/Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:enabled="false"

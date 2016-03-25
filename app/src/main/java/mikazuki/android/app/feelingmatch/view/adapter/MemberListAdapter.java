@@ -1,7 +1,11 @@
 package mikazuki.android.app.feelingmatch.view.adapter;
 
 import android.content.Context;
+import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.TextAppearanceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,16 +66,28 @@ public class MemberListAdapter extends BaseAdapter {
         holder.name.setText(user.getName());
         final int color = user.isBoy() ? R.color.colorPrimaryDark : R.color.colorAccentDark;
         holder.name.setTextColor(context.getResources().getColor(color));
-        holder.remove.setOnClickListener(v ->
-                new AlertDialog.Builder(context)
-                        .setTitle("メンバー削除")
-                        .setMessage(user.getName() + "さんを削除して本当によろしいですか？")
-                        .setPositiveButton("はい", ((dialog, which) -> {
-                            memberList.remove(position);
-                            notifyDataSetChanged();
-                        })).setNegativeButton("いいえ", null)
-                        .create()
-                        .show());
+        holder.remove.setOnClickListener(v -> {
+            TextAppearanceSpan coloredSpan = new TextAppearanceSpan(context, user.isBoy() ? R.style.Boy : R.style.Girl);
+            SpannableStringBuilder ssb = new SpannableStringBuilder();
+            ssb.append(user.getName());
+            ssb.setSpan(coloredSpan, 0, ssb.length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            ssb.append("さんを削除して本当によろしいですか？");
+
+            Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            vibrator.vibrate(100);
+
+            new AlertDialog.Builder(context)
+                    .setTitle("メンバー削除")
+//                        .setMessage(user.getName() + "さんを削除して本当によろしいですか？")
+                    .setMessage(ssb)
+                    .setPositiveButton("はい", ((dialog, which) -> {
+                        memberList.remove(position);
+                        notifyDataSetChanged();
+                    })).setNegativeButton("いいえ", null)
+                    .create()
+                    .show();
+        });
         return convertView;
     }
 
