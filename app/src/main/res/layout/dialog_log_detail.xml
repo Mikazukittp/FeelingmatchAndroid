@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/name"
+        style="@style/SimpleEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:hint="名前"
+        android:maxLength="10"
+        android:singleLine="true"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:theme="@style/SimpleEditText">
+
+        <requestFocus />
+    </android.support.v7.widget.AppCompatEditText>
+
+    <RadioGroup
+        android:id="@+id/sex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/boy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/boyDark"
+            android:checked="true"
+            android:text="男性" />
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:id="@+id/girl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/girlDark"
+            android:text="女性" />
+    </RadioGroup>
+</LinearLayout>

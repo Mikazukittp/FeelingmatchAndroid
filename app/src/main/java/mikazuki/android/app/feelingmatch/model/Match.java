@@ -13,14 +13,16 @@ public class Match extends RealmObject {
 
     @PrimaryKey
     private long id;
+    private String name;
     private Date time;
     private RealmList<User> members;
 
     public Match() {
     }
 
-    public Match(long id, Date time, RealmList<User> members) {
+    public Match(long id, String name, Date time, RealmList<User> members) {
         this.id = id;
+        this.name = name;
         this.time = time;
         this.members = members;
     }
@@ -31,6 +33,14 @@ public class Match extends RealmObject {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Date getTime() {

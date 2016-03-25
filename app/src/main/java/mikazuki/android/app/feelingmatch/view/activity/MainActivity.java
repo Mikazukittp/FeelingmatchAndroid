@@ -154,6 +154,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_result:
+                startActivity(new Intent(this, LogActivity.class));
                 break;
             case R.id.menu_about:
                 break;
