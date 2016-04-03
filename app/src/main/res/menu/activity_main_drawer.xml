@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/menu_result"
+            android:icon="@drawable/ic_favorite_border_grey_400_36dp"
+            android:title="過去の結果" />
+    </group>
+
+    <item
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="設定">
+        <menu>
+            <item
+                android:id="@+id/menu_about"
+                android:title="このアプリについて" />
+            <item
+                android:id="@+id/menu_privacy"
+                android:title="プライバシーポリシー" />
+            <item
+                android:id="@+id/menu_license"
+                android:title="オープンソースライセンス" />
+            <item
+                android:id="@+id/menu_version"
+                android:title="バージョン" />
+        </menu>
+    </item>
+
+</menu>

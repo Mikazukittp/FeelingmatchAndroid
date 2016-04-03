@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">FeelingMatch</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="remove_user">ユーザーの削除</string>
+    <string name="start">開始</string>
+</resources>

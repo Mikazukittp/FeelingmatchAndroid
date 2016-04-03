@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#80DEEA</color> <!-- Cyan 200 -->
+    <color name="colorPrimaryLight">#B2EBF2</color> <!-- Cyan 100 -->
+    <color name="colorPrimaryDark">#00BCD4</color> <!-- Cyan 500 -->
+    <color name="colorAccent">#F48FB1</color> <!-- Pink 200 -->
+    <color name="colorAccentLight">#F8BBD0</color> <!-- Pink 100 -->
+    <color name="colorAccentDark">#F06292</color> <!-- Pink 300 -->
+    <color name="grey">#B0BEC5</color> <!-- Blue Gray 200 -->
+    <color name="greyLight">#CFD8DC</color> <!-- Blue Gray 100 -->
+    <color name="greyDark">#78909C</color> <!-- Blue Gray 400 -->
+
+    <color name="boy">#80DEEA</color>
+    <color name="boyLight">#B2EBF2</color>
+    <color name="boyDark">#00BCD4</color>
+    <color name="girl">#F48FB1</color>
+    <color name="girlLight">#F8BBD0</color>
+    <color name="girlDark">#F06292</color>
+
+    <color name="love">#c62828</color>
+
+</resources>

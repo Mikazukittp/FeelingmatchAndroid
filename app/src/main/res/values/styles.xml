@@ -1,0 +1,62 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccentDark</item>
+
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/secondary_text_light</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <style name="Button" parent="Widget.AppCompat.Button">
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/background_btn_default</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="SimpleEditText" parent="Widget.AppCompat.EditText">
+        <item name="colorControlNormal">@color/grey</item>
+        <item name="colorControlActivated">@color/grey</item>
+        <item name="android:textCursorDrawable">@drawable/shape_edittext_cursor</item>
+    </style>
+
+    <!-- Text Style -->
+    <style name="Boy" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/boyDark</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Girl" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/girlDark</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Boy.Large">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="Girl.Large">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="AppTheme.NavMenu" parent="AppTheme">
+        <item name="android:textColorPrimary">@color/colorPrimaryDark</item>
+    </style>
+
+</resources>

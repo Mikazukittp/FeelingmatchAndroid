@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="true">
+        <ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="@color/colorAccentDark">
+            <item android:drawable="@drawable/shape_btn_large" />
+        </ripple>
+    </item>
+    <item android:drawable="@drawable/shape_btn_disabled_large" android:state_enabled="false" />
+</selector>
