@@ -11,8 +11,6 @@ import android.widget.TextView;
 import com.annimon.stream.Stream;
 import com.google.common.collect.Maps;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.List;
 import java.util.Map;
 
@@ -64,12 +62,9 @@ public class LogListAdapter extends BaseAdapter {
         }
 
         final Match rowData = logList.get(position);
-        final String date = DateFormat.format("'yy MM/dd hh:mm", rowData.getTime()).toString();
-        if (StringUtils.isEmpty(rowData.getName())) {
-            holder.name.setText(date);
-        } else {
-            holder.name.setText(rowData.getName() + " (" + date + ")");
-        }
+        holder.name.setText(rowData.getName());
+        final String date = DateFormat.format("MM/dd hh:mm", rowData.getTime()).toString();
+        holder.date.setText(date);
 
         Map<Long, User> boys = Maps.newHashMap();
         Map<Long, User> girls = Maps.newHashMap();
@@ -84,6 +79,8 @@ public class LogListAdapter extends BaseAdapter {
     public static class ViewHolder {
         @Bind(R.id.name)
         TextView name;
+        @Bind(R.id.date)
+        TextView date;
         @Bind(R.id.boy)
         TextView boy;
         @Bind(R.id.girl)

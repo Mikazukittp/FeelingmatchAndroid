@@ -1,46 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:paddingBottom="16dp"
+    android:paddingTop="16dp">
 
 
-    <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/name"
-        style="@style/SimpleEditText"
+    <TextView
+        android:id="@+id/date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:hint="名前"
-        android:maxLength="10"
-        android:singleLine="true"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:theme="@style/SimpleEditText">
+        android:layout_gravity="right"
+        android:layout_marginBottom="16dp"
+        android:gravity="right"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="'yy MM/dd hh:mm" />
 
-        <requestFocus />
-    </android.support.v7.widget.AppCompatEditText>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
 
-    <RadioGroup
-        android:id="@+id/sex"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginRight="8dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:text="名前未設定"
+            android:textSize="24sp" />
 
-        <android.support.v7.widget.AppCompatRadioButton
-            android:id="@+id/boy"
+        <ImageButton
+            android:id="@+id/edit_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:buttonTint="@color/boyDark"
-            android:checked="true"
-            android:text="男性" />
+            android:background="@null"
+            android:src="@drawable/ic_settings_black_24dp"
+            android:tint="@color/greyDark" />
+    </LinearLayout>
 
-        <android.support.v7.widget.AppCompatRadioButton
-            android:id="@+id/girl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:buttonTint="@color/girlDark"
-            android:text="女性" />
-    </RadioGroup>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:text="参加者" />
+
+    <ListView
+        android:id="@+id/member"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

@@ -75,7 +75,7 @@ public class MemberListAdapter extends BaseAdapter {
             ssb.append("さんを削除して本当によろしいですか？");
 
             Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(100);
+            vibrator.vibrate(50);
 
             new AlertDialog.Builder(context)
                     .setTitle("メンバー削除")

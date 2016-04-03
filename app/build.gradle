@@ -3,13 +3,21 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'realm-android'
 
+
 android {
     compileSdkVersion 23
     buildToolsVersion '23.0.2'
 
+    productFlavors {
+        dev {
+            minSdkVersion 21
+        }
+        prod {
+            minSdkVersion 19
+        }
+    }
     defaultConfig {
         applicationId 'mikazuki.android.app.feelingmatch'
-        minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
         versionName '1.0'
