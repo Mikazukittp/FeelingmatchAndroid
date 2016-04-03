@@ -45,7 +45,6 @@ import mikazuki.android.app.feelingmatch.view.adapter.MemberListAdapter;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-
     private static final ColorStateList Pressed_Cyan = new ColorStateList(
             new int[][]{new int[]{android.R.attr.state_pressed}, new int[]{}},
             new int[]{Color.parseColor("#00BCD4"), Color.DKGRAY});
@@ -90,14 +89,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
                 RealmList<User> members = new RealmList<>();
 
-                long nextId = AutoIncrement.newId(mRealm, User.class);
+                long nextId = AutoIncrement.INSTANCE.newId(mRealm, User.class);
                 mRealm.beginTransaction();
                 for (User user : Stream.concat(Stream.of(mBoys), Stream.of(mGirls)).collect(Collectors.toList())) {
                     if (user.getId() == -1) user.setId(nextId++);
                     members.add(user);
                     mRealm.copyToRealmOrUpdate(user);
                 }
-                Match match = new Match(AutoIncrement.newId(mRealm, Match.class), null, new Date(), members);
+                Match match = new Match(AutoIncrement.INSTANCE.newId(mRealm, Match.class), null, new Date(), members);
                 mRealm.copyToRealmOrUpdate(match);
                 mRealm.commitTransaction();
 
@@ -132,7 +131,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         // TODO: リリース時は外す
         if (BuildConfig.DEBUG) {
-            Match match = mRealm.where(Match.class).equalTo("id", 1).findFirst();
+            Match match = mRealm.where(Match.class).equalTo("id", 0).findFirst();
             if (match != null) {
                 Stream.of(match.getMembers()).forEach(member -> {
                     if (member.isBoy()) mBoys.add(member);
