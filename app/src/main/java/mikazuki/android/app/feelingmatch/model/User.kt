@@ -13,9 +13,9 @@ open class User(
         open var favoriteUserId: Long = 0,
         open var isPublicUser: Boolean = false) : RealmObject() {
 
-    //    val isBoy: Boolean
-    //        get() = this.sex == 1
-    //
-    //    val isGirl: Boolean
-    //        get() = this.sex == 0
+    val isBoy: Boolean
+        get() = this.sex == 1
+
+    val isGirl: Boolean
+        get() = this.sex == 0
 }
